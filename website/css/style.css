@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.page-section {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.page-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+.dark .stat-card:hover {
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* Dark mode transitions */
+.dark .bg-white {
+    background-color: #1e293b;
+}
+
+.dark .bg-gray-50 {
+    background-color: #0f172a;
+}
+
+.dark .bg-gray-100 {
+    background-color: #1e293b;
+}
+
+.dark .text-gray-900 {
+    color: #f1f5f9;
+}
+
+.dark .text-gray-800 {
+    color: #e2e8f0;
+}
+
+.dark .text-gray-700 {
+    color: #cbd5e1;
+}
+
+.dark .text-gray-600 {
+    color: #94a3b8;
+}
+
+.dark .text-gray-500 {
+    color: #64748b;
+}
+
+.dark .text-gray-400 {
+    color: #475569;
+}
+
+.dark .border-gray-200 {
+    border-color: #334155;
+}
+
+.dark .border-gray-100 {
+    border-color: #1e293b;
+}
+
+.dark .hover\:bg-gray-50:hover {
+    background-color: #1e293b;
+}
+
+.dark .hover\:bg-gray-100:hover {
+    background-color: #334155;
+}
+
+.dark .hover\:bg-gray-200:hover {
+    background-color: #475569;
+}
+
+/* Dark mode for specific components */
+.dark .bg-blue-50 { background-color: #1e3a5f; }
+.dark .bg-green-50 { background-color: #14532d; }
+.dark .bg-orange-50 { background-color: #7c2d12; }
+.dark .bg-red-50 { background-color: #7f1d1d; }
+.dark .bg-purple-50 { background-color: #581c87; }
+.dark .bg-yellow-50 { background-color: #713f12; }
+
+.dark .bg-blue-100 { background-color: #1e40af; }
+.dark .bg-green-100 { background-color: #166534; }
+.dark .bg-orange-100 { background-color: #9a3412; }
+.dark .bg-red-100 { background-color: #991b1b; }
+.dark .bg-purple-100 { background-color: #6b21a8; }
+.dark .bg-gray-50 { background-color: #1e293b; }
+
+.dark .text-blue-700 { color: #93c5fd; }
+.dark .text-green-700 { color: #86efac; }
+.dark .text-orange-700 { color: #fdba74; }
+.dark .text-red-700 { color: #fca5a5; }
+.dark .text-purple-700 { color: #d8b4fe; }
+.dark .text-yellow-700 { color: #fde047; }
+
+/* Scrollbar dark mode */
+.dark ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Pre/code blocks */
+.dark pre {
+    background-color: #0f172a !important;
+}
+
+/* Select inputs */
+.dark select {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+/* Textarea */
+.dark textarea {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+/* ── Image Modal ─────────────────────────────────────────────── */
+#imageModal {
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+#imageModal.show {
+    display: flex;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ── Clickable Images ────────────────────────────────────────── */
+img[class*="rounded"] {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+img[class*="rounded"]:hover {
+    transform: scale(1.01);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dark img[class*="rounded"]:hover {
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+}

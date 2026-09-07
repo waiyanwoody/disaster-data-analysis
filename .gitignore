@@ -1,0 +1,96 @@
+# Python
+models/DL/transformer_urgency/
+
+models/DL/transformer_essential/
+
+models/DL/transformer_binary/
+
+__pycache__/
+
+*.py[cod]
+
+*.pyo
+
+*.pyd
+
+# Virtual environments
+
+.venv/
+
+venv/
+
+env/
+
+ENV/
+
+# Environment variables / secrets
+
+.env
+
+.env.*
+
+!.env.example
+
+# Jupyter Notebook
+
+.ipynb_checkpoints/
+
+# IDE / editors
+
+.vscode/
+
+.idea/
+
+# macOS
+
+.DS_Store
+
+# Logs
+
+*.log
+
+# Testing / coverage
+
+.pytest_cache/
+
+.coverage
+
+htmlcov/
+
+# Build / distribution
+
+build/
+
+dist/
+
+*.egg-info/
+
+# ML / model cache
+
+.cache/
+
+huggingface_cache/
+
+transformers_cache/
+
+# Temporary files
+
+tmp/
+
+temp/
+
+# Local data
+
+*.sqlite
+
+*.sqlite3
+
+# Python tooling
+
+.mypy_cache/
+
+.ruff_cache/
+
+# OS files
+
+Thumbs.db
