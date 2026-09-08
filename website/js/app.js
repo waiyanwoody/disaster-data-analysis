@@ -23,6 +23,7 @@ const SECTIONS = [
             { id: 'models-testing', label: 'Test Models' },
             { id: 'models-performance', label: 'Performance Metrics' },
             { id: 'models-evaluation', label: 'Evaluation Dashboards' },
+            { id: 'models-cost', label: 'Computation & Storage' },
         ]
     },
     {
@@ -93,7 +94,7 @@ function renderPage() {
     const renderer = {
         'home': renderHome, 'home-dataset': renderHomeDataset, 'home-findings': renderHomeFindings, 'home-about': renderHomeAbout,
         'eda-distributions': renderEdaDistributions, 'eda-patterns': renderEdaPatterns, 'eda-visualizations': renderEdaVisualizations,
-        'models-testing': renderModelsTesting, 'models-performance': renderModelsPerformance, 'models-evaluation': renderModelsEvaluation,
+        'models-testing': renderModelsTesting, 'models-performance': renderModelsPerformance, 'models-evaluation': renderModelsEvaluation, 'models-cost': renderModelsCost,
         'insights-discoveries': renderInsightsDiscoveries, 'insights-conclusions': renderInsightsConclusions,
     };
     app.innerHTML = `<div class="page-section active">${(renderer[currentPage] || renderer.home)()}</div>`;
@@ -784,6 +785,10 @@ function renderModelsPerformance() {
             </div>
         </div>
     </div>`;
+}
+
+function renderModelsCost() {
+    return CostAnalysis.render();
 }
 
 function renderModelsEvaluation() {

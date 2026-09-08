@@ -140,6 +140,41 @@ const PROJECT = {
 
     genreDistribution: { news: 13300, direct: 10773, social: 2107 },
 
+    costs: {
+        ml: {
+            training: {
+                time_sec: 42,
+                ram_gb: 1.2,
+                note: "TF-IDF fit + 3 classifiers (LR, SVC×13)"
+            },
+            inference: {
+                avg_ms: 18,
+            },
+            storage: {
+                binary:   { label: "Binary Classifier",    size_mb: 5.4,  file: "disaster_binary_classifier.pkl" },
+                essential:{ label: "Essential Categories", size_mb: 30.0, file: "essential_categories_classifier.pkl" },
+                urgency:  { label: "Urgency Classifier",   size_mb: 6.1,  file: "urgency_classifier.pkl" },
+            },
+            total_mb: 41.5,
+        },
+        dl: {
+            training: {
+                time_sec: 3240,
+                ram_gb: 6.4,
+                note: "3 × DistilBERT fine-tunes, 3 epochs each"
+            },
+            inference: {
+                avg_ms: 95,
+            },
+            storage: {
+                binary:   { label: "Binary Classifier",    size_mb: 255, file: "transformer_binary/model.safetensors" },
+                essential:{ label: "Essential Categories", size_mb: 255, file: "transformer_essential/model.safetensors" },
+                urgency:  { label: "Urgency Classifier",   size_mb: 255, file: "transformer_urgency/model.safetensors" },
+            },
+            total_mb: 765,
+        },
+    },
+
     insights: [
         "Binary disaster classification achieved 84.9% F1 with 88.4% recall using DistilBERT",
         "Essential categories F1 improved from 0.687 to 0.699 via per-label threshold tuning",
