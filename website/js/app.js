@@ -6,6 +6,7 @@ const SECTIONS = [
             { id: 'home', label: 'Overview' },
             { id: 'home-dataset', label: 'Dataset Summary' },
             { id: 'home-findings', label: 'Key Findings' },
+            { id: 'home-about', label: 'Model Building Strategies' },
         ]
     },
     {
@@ -27,10 +28,8 @@ const SECTIONS = [
     {
         id: 'insights', label: 'Insights', icon: 'lightbulb',
         pages: [
-            { id: 'insights-discoveries', label: 'Key Discoveries' },
-            { id: 'insights-patterns', label: 'Important Patterns' },
-            { id: 'insights-conclusions', label: 'Conclusions' },
-            { id: 'insights-future', label: 'Limitations & Future' },
+            { id: 'insights-discoveries', label: 'Results & Key Findings' },
+            { id: 'insights-conclusions', label: 'Conclusions & Future Work' },
         ]
     },
 ];
@@ -92,11 +91,10 @@ function toggleMobileMenu() {
 function renderPage() {
     const app = document.getElementById('app');
     const renderer = {
-        'home': renderHome, 'home-dataset': renderHomeDataset, 'home-findings': renderHomeFindings,
+        'home': renderHome, 'home-dataset': renderHomeDataset, 'home-findings': renderHomeFindings, 'home-about': renderHomeAbout,
         'eda-distributions': renderEdaDistributions, 'eda-patterns': renderEdaPatterns, 'eda-visualizations': renderEdaVisualizations,
         'models-testing': renderModelsTesting, 'models-performance': renderModelsPerformance, 'models-evaluation': renderModelsEvaluation,
-        'insights-discoveries': renderInsightsDiscoveries, 'insights-patterns': renderInsightsPatterns,
-        'insights-conclusions': renderInsightsConclusions, 'insights-future': renderInsightsFuture,
+        'insights-discoveries': renderInsightsDiscoveries, 'insights-conclusions': renderInsightsConclusions,
     };
     app.innerHTML = `<div class="page-section active">${(renderer[currentPage] || renderer.home)()}</div>`;
     initPageCharts();
@@ -380,6 +378,233 @@ function renderHomeFindings() {
         </div>
     </div>`;
 }
+function renderHomeAbout() {
+    return `<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3">Model Building Strategies</h1>
+            <p class="text-gray-600 dark:text-gray-400">Detailed methodology for each classification model</p>
+        </div>
+        
+        <!-- Urgency Classifier -->
+        <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-dark-700 overflow-hidden mb-6">
+            <div class="px-6 py-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border-b border-gray-100 dark:border-dark-700">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-red-600"></i>
+                    Urgency Level Classifier (4-class)
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">Strategy: Synthetic Label Generation</h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Uses weighted scoring + quantile-based thresholds to generate urgency labels from message content</p>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Step 1: Category Weighting</h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                        <div class="text-red-600 dark:text-red-400">death: 4 (critical)</div>
+                        <div class="text-orange-600 dark:text-orange-400">medical_help: 3 (high)</div>
+                        <div class="text-orange-600 dark:text-orange-400">search_and_rescue: 3</div>
+                        <div class="text-orange-600 dark:text-orange-400">missing_people: 3</div>
+                        <div class="text-yellow-600 dark:text-yellow-400">water, food, shelter: 2 (med)</div>
+                        <div class="text-yellow-600 dark:text-yellow-400">floods, earthquake, storm: 2</div>
+                        <div class="text-green-600 dark:text-green-400">transport, buildings: 1 (low)</div>
+                        <div class="text-green-600 dark:text-green-400">electricity, refugees: 1</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Step 2: Quantile Thresholds</h4>
+                    <div class="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                        <div>• <strong>Low (0):</strong> score ≤ Q35 (35th percentile)</div>
+                        <div>• <strong>Medium (1):</strong> Q35 < score ≤ Q65</div>
+                        <div>• <strong>High (2):</strong> Q65 < score ≤ Q88</div>
+                        <div>• <strong>Critical (3):</strong> score > Q88</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Step 3: ML Training</h4>
+                    <div class="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                        <div>• <strong>Vectorization:</strong> TF-IDF (char n-grams 2-6, max 10k features)</div>
+                        <div>• <strong>Algorithm:</strong> Logistic Regression with balanced class weights</div>
+                        <div>• <strong>Boosting:</strong> High/Critical classes weighted ×1.4</div>
+                        <div>• <strong>Hyperparameter:</strong> C ∈ {0.3, 0.5, 1.0} via grid search</div>
+                        <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Baseline F1-Macro: 52.2% → Improved: 83.2%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Binary Disaster Classifier -->
+        <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-dark-700 overflow-hidden mb-6">
+            <div class="px-6 py-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-b border-gray-100 dark:border-dark-700">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="target" class="w-5 h-5 text-blue-600"></i>
+                    Binary Disaster Classifier
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">Strategy: Meaningful Category Detection</h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Identifies disaster-related messages by filtering out noise categories</p>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Label Generation Logic</h4>
+                    <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        <div><strong>Noise Categories (excluded):</strong></div>
+                        <div class="text-xs font-mono bg-white dark:bg-dark-800 p-2 rounded">
+                            related, request, offer, direct_report, child_alone, tools, shops
+                        </div>
+                        <div class="mt-2"><strong>Disaster Detection:</strong></div>
+                        <div class="text-xs">is_disaster = (related == 1) AND (meaningful_categories ≥ 1)</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">ML Training</h4>
+                    <div class="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                        <div>• <strong>Vectorization:</strong> TF-IDF (word n-grams 1-2, max 10k features)</div>
+                        <div>• <strong>Algorithm:</strong> Logistic Regression with balanced class weights</div>
+                        <div>• <strong>Optimization:</strong> L2 regularization, C=1.0</div>
+                        <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Baseline F1: 82.8% → Improved: 84.9%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Essential Categories Classifier -->
+        <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-dark-700 overflow-hidden mb-6">
+            <div class="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-gray-100 dark:border-dark-700">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="layers" class="w-5 h-5 text-green-600"></i>
+                    Essential Categories Classifier (Multi-label)
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">Strategy: Filtered Multi-label Classification</h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Focuses on 10 essential resource categories, removing rare labels</p>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Category Selection</h4>
+                    <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        <div><strong>10 Essential Categories:</strong></div>
+                        <div class="grid grid-cols-2 gap-1 text-xs font-mono">
+                            <div>• medical_help</div>
+                            <div>• medical_products</div>
+                            <div>• death</div>
+                            <div>• floods</div>
+                            <div>• storm</div>
+                            <div>• earthquake</div>
+                            <div>• water</div>
+                            <div>• food</div>
+                            <div>• shelter</div>
+                            <div>• aid_related</div>
+                        </div>
+                        <div class="mt-2 text-xs text-red-600 dark:text-red-400">
+                            <strong>Removed (rare):</strong> search_and_rescue, transport, missing_people
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">ML Training</h4>
+                    <div class="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                        <div>• <strong>Approach:</strong> One-vs-Rest (OvR) with 10 binary classifiers</div>
+                        <div>• <strong>Vectorization:</strong> TF-IDF (word n-grams 1-2, max 10k features)</div>
+                        <div>• <strong>Algorithm:</strong> Logistic Regression per category</div>
+                        <div>• <strong>Threshold:</strong> Probability ≥ 0.5 for positive label</div>
+                        <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Baseline F1-Macro: 59.8% → Improved: 68.9%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Deep Learning Models -->
+        <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg border border-gray-100 dark:border-dark-700 overflow-hidden mb-6">
+            <div class="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-b border-gray-100 dark:border-dark-700">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="brain" class="w-5 h-5 text-purple-600"></i>
+                    Deep Learning Models (Transformer-based)
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">Strategy: DistilBERT Fine-tuning</h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Leverages pre-trained transformers for contextual understanding</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10 rounded-xl p-4 mb-4 border-2 border-purple-200 dark:border-purple-800">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">Base Architecture: DistilBERT</h4>
+                    <div class="grid grid-cols-3 gap-3 text-xs text-gray-700 dark:text-gray-300">
+                        <div class="text-center p-2 bg-white dark:bg-dark-800 rounded">
+                            <div class="font-bold text-purple-600 dark:text-purple-400">66M</div>
+                            <div>Parameters</div>
+                        </div>
+                        <div class="text-center p-2 bg-white dark:bg-dark-800 rounded">
+                            <div class="font-bold text-purple-600 dark:text-purple-400">6 Layers</div>
+                            <div>Transformer</div>
+                        </div>
+                        <div class="text-center p-2 bg-white dark:bg-dark-800 rounded">
+                            <div class="font-bold text-purple-600 dark:text-purple-400">128 Tokens</div>
+                            <div>Max Length</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-4 mb-4">
+                    <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Urgency DL</h4>
+                        </div>
+                        <div class="text-xs text-gray-700 dark:text-gray-300 space-y-1">
+                            <div>4-class softmax</div>
+                            <div class="font-bold text-red-600 dark:text-red-400">F1-Macro: 85.7%</div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Binary DL</h4>
+                        </div>
+                        <div class="text-xs text-gray-700 dark:text-gray-300 space-y-1">
+                            <div>Binary sigmoid</div>
+                            <div class="font-bold text-blue-600 dark:text-blue-400">F1-Score: 87.3%</div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="package" class="w-4 h-4 text-green-600"></i>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Essential DL</h4>
+                        </div>
+                        <div class="text-xs text-gray-700 dark:text-gray-300 space-y-1">
+                            <div>Multi-label sigmoid</div>
+                            <div class="font-bold text-green-600 dark:text-green-400">10 categories</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-dark-700 rounded-xl p-4">
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Training Configuration</h4>
+                    <div class="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                        <div>• <strong>Optimizer:</strong> AdamW (lr=2e-5, weight_decay=0.01)</div>
+                        <div>• <strong>Epochs:</strong> 3-5 with early stopping</div>
+                        <div>• <strong>Batch Size:</strong> 16 (with gradient accumulation)</div>
+                        <div>• <strong>Augmentation:</strong> Synthetic data generation via GPT-4</div>
+                        <div>• <strong>Deployment:</strong> HuggingFace Hub (waiyantun/disaster-*)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+
+
+
 
 // ══════════════════════════════════════════════════════════════════
 //  EDA
@@ -390,13 +615,25 @@ function renderEdaDistributions() {
         <h1 class="text-3xl font-bold mb-2 dark:text-white">Data Distributions</h1>
         <p class="text-gray-600 dark:text-gray-400 mb-8">Understanding the shape and structure of the dataset</p>
         <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6 md:col-span-2">
+                <h2 class="font-semibold mb-4 dark:text-white">Overview: Message Length, Genre & Urgency</h2>
+                <img src="images/descriptive/new/overview_length_genre_urgency.png" alt="Overview Length Genre Urgency" class="w-full rounded-xl">
+            </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Genre Distribution</h2>
                 <img src="images/descriptive/genre_distribution.png" alt="Genre Distribution" class="w-full rounded-xl">
             </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Message Length Distribution</h2>
-                <img src="images/descriptive/message_length.png" alt="Message Length" class="w-full rounded-xl">
+                <h2 class="font-semibold mb-4 dark:text-white">Class Imbalance</h2>
+                <img src="images/descriptive/new/class_imbalance.png" alt="Class Imbalance" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Message Length vs Urgency</h2>
+                <img src="images/descriptive/new/length_vs_urgency.png" alt="Length vs Urgency" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Length vs Urgency by Category</h2>
+                <img src="images/descriptive/new/length_vs_urgency_category.png" alt="Length vs Urgency by Category" class="w-full rounded-xl">
             </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Category Frequency</h2>
@@ -421,10 +658,22 @@ function renderEdaPatterns() {
                 <img src="images/descriptive/cooccurrence_heatmap.png" alt="Co-occurrence Heatmap" class="w-full rounded-xl">
             </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Association Rules</h2>
+                <h2 class="font-semibold mb-4 dark:text-white">Association Rules (Bar Chart)</h2>
                 <img src="images/descriptive/association_rules.png" alt="Association Rules" class="w-full rounded-xl">
             </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Association Rule Network</h2>
+                <img src="images/descriptive/new/association_rule_network.png" alt="Association Rule Network" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Genre × Category Heatmap</h2>
+                <img src="images/descriptive/new/genre_category_heatmap.png" alt="Genre Category Heatmap" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Numeric Correlation Matrix</h2>
+                <img src="images/descriptive/new/numeric_correlation.png" alt="Numeric Correlation" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6 md:col-span-2">
                 <h2 class="font-semibold mb-4 dark:text-white">Frequent Itemsets</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
@@ -444,11 +693,27 @@ function renderEdaVisualizations() {
     return `
     <div class="max-w-7xl mx-auto px-4 py-12">
         <h1 class="text-3xl font-bold mb-2 dark:text-white">Visualizations</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-8">Clustering analysis and dimensionality reduction</p>
+        <p class="text-gray-600 dark:text-gray-400 mb-8">Clustering analysis, word clouds, and dimensionality reduction</p>
         <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Word Cloud by Urgency Level</h2>
+                <img src="images/descriptive/new/wordcloud_urgency.png" alt="Word Cloud Urgency" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Word Cloud by Cluster</h2>
+                <img src="images/descriptive/new/wordcloud_clusters.png" alt="Word Cloud Clusters" class="w-full rounded-xl">
+            </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Clustering: Elbow & Silhouette</h2>
                 <img src="images/descriptive/clustering_elbow.png" alt="Clustering Elbow" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">DBSCAN Noise Analysis</h2>
+                <img src="images/descriptive/new/dbscan_noise_analysis.png" alt="DBSCAN Noise Analysis" class="w-full rounded-xl">
+            </div>
+            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+                <h2 class="font-semibold mb-4 dark:text-white">Label Cardinality Distribution</h2>
+                <img src="images/descriptive/new/label_cardinality.png" alt="Label Cardinality" class="w-full rounded-xl">
             </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">t-SNE: Cluster Visualization</h2>
@@ -688,84 +953,27 @@ function renderInsightsDiscoveries() {
     </div>`;
 }
 
-function renderInsightsPatterns() {
-    return `
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-bold mb-2 dark:text-white">Important Patterns</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-8">Patterns discovered through association rules and clustering</p>
-        <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Top Association Rules</h2>
-                <div class="space-y-3">
-                    ${PROJECT.association.topRules.map(r => `
-                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-dark-700 rounded-xl">
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-blue-500"></i>
-                                <span class="font-medium text-sm dark:text-white">${r.antecedent} → ${r.consequent}</span>
-                            </div>
-                            <div class="text-right text-sm">
-                                <div class="font-bold text-blue-600">lift: ${r.lift}</div>
-                                <div class="text-gray-500 dark:text-gray-400">conf: ${r.confidence}</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Clustering Summary</h2>
-                <div class="space-y-4">
-                    <div class="p-4 bg-gray-50 dark:bg-dark-700 rounded-xl">
-                        <div class="font-medium flex items-center gap-2 dark:text-white"><i data-lucide="hash" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i> Optimal Clusters: k=2</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Silhouette: 0.14 · CH: 1850.5 · DB: 1.82</div>
-                    </div>
-                    <div class="p-4 bg-gray-50 dark:bg-dark-700 rounded-xl">
-                        <div class="font-medium flex items-center gap-2 dark:text-white"><i data-lucide="layers" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i> Methods Compared</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">K-Means, Agglomerative (Ward), DBSCAN</div>
-                    </div>
-                    <div class="p-4 bg-gray-50 dark:bg-dark-700 rounded-xl">
-                        <div class="font-medium flex items-center gap-2 dark:text-white"><i data-lucide="info" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i> Cluster Interpretation</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cluster 0: Non-disaster/informational · Cluster 1: Disaster/action needed</div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6 md:col-span-2">
-                <h2 class="font-semibold mb-4 dark:text-white">Category Co-occurrence Patterns</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-center">
-                        <div class="font-bold text-blue-600">Food + Water</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Most common pair</div>
-                    </div>
-                    <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl text-center">
-                        <div class="font-bold text-green-600">Food + Water + Shelter</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Survival bundle</div>
-                    </div>
-                    <div class="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl text-center">
-                        <div class="font-bold text-orange-600">Medical + Aid</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Health response</div>
-                    </div>
-                    <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl text-center">
-                        <div class="font-bold text-purple-600">Storm + Floods</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Weather events</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>`;
-}
-
 function renderInsightsConclusions() {
     return `
     <div class="max-w-7xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-bold mb-2 dark:text-white">Conclusions</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-8">Summary of project outcomes</p>
+        <div class="text-center mb-12">
+            <span class="inline-block px-4 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm font-semibold rounded-full mb-4">CONCLUSIONS</span>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">Conclusions & Future Work</h1>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Project outcomes, limitations, and next steps</p>
+        </div>
+
+        <!-- Project Summary -->
         <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-8 mb-6">
             <h2 class="text-xl font-semibold mb-4 dark:text-white">Project Summary</h2>
-            <p class="text-gray-700 dark:text-gray-300 mb-4">This project develops a complete ML pipeline for disaster response message classification, covering the full KDD process from data preparation to model deployment.</p>
-            <div class="grid md:grid-cols-2 gap-6 mt-6">
+            <p class="text-gray-700 dark:text-gray-300 mb-6">Complete ML pipeline for disaster response message classification, covering the full KDD process from data preparation to model deployment.</p>
+            <div class="grid md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="font-semibold mb-2 dark:text-white">Techniques Applied</h3>
-                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> KDD Process — Data cleaning, integration, transformation</li>
+                    <h3 class="font-semibold mb-3 dark:text-white flex items-center gap-2">
+                        <i data-lucide="layers" class="w-5 h-5 text-blue-600"></i>
+                        Techniques Applied
+                    </h3>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> KDD Process — Data cleaning, transformation</li>
                         <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Association Rules — Apriori algorithm</li>
                         <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Clustering — K-Means, Hierarchical, DBSCAN</li>
                         <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Classification — TF-IDF + LogReg/SVC</li>
@@ -774,77 +982,86 @@ function renderInsightsConclusions() {
                     </ul>
                 </div>
                 <div>
-                    <h3 class="font-semibold mb-2 dark:text-white">Key Results</h3>
-                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Binary: 84.9% F1, 88.4% recall (DistilBERT)</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Essential: 75.0% F1 micro (10 labels, DistilBERT)</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Urgency: 82.3% F1 macro (4 classes, DistilBERT)</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> DistilBERT: ~2-3% improvement over TF-IDF</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> 2 natural clusters discovered</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> {food, water, shelter} core bundle confirmed</li>
+                    <h3 class="font-semibold mb-3 dark:text-white flex items-center gap-2">
+                        <i data-lucide="trophy" class="w-5 h-5 text-yellow-600"></i>
+                        Key Results
+                    </h3>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Binary: 87.3% F1 (DistilBERT)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Urgency: 85.7% F1-Macro (4 classes)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Essential: 68.9% F1-Macro (10 labels)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> DistilBERT: 3-5% improvement over TF-IDF</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Myanmar language support (Azure API)</li>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>`;
-}
 
-function renderInsightsFuture() {
-    return `
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-bold mb-2 dark:text-white">Limitations & Future Work</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-8">Areas for improvement and next steps</p>
-        <div class="grid md:grid-cols-2 gap-6">
+        <!-- Limitations & Future Work Grid -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 text-red-600 flex items-center gap-2 dark:text-white"><i data-lucide="alert-circle" class="w-5 h-5"></i> Limitations</h2>
+                <h2 class="font-semibold mb-4 text-red-600 dark:text-red-400 flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i> 
+                    Limitations
+                </h2>
                 <div class="space-y-3">
                     <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
                         <div class="font-medium text-sm dark:text-white">Synthetic Urgency Labels</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">No human-annotated ground truth for urgency levels</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">No human-annotated ground truth for urgency validation</div>
                     </div>
                     <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
                         <div class="font-medium text-sm dark:text-white">Class Imbalance</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Some categories have very few samples (86.9:1 ratio)</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Some categories very rare (86.9:1 ratio)</div>
                     </div>
                     <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                        <div class="font-medium text-sm dark:text-white">English Only</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">No multilingual support for international disaster response</div>
+                        <div class="font-medium text-sm dark:text-white">Short Message Performance</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Accuracy drops for messages under 5 words</div>
                     </div>
                     <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                        <div class="font-medium text-sm dark:text-white">Low Urgency F1</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">82.3% F1 macro on 4-class urgency — best with DistilBERT</div>
+                        <div class="font-medium text-sm dark:text-white">Computational Cost</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">DistilBERT requires GPU for real-time inference</div>
                     </div>
                 </div>
             </div>
+            
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 text-green-600 flex items-center gap-2 dark:text-white"><i data-lucide="rocket" class="w-5 h-5"></i> Future Work</h2>
+                <h2 class="font-semibold mb-4 text-green-600 dark:text-green-400 flex items-center gap-2">
+                    <i data-lucide="rocket" class="w-5 h-5"></i> 
+                    Future Work
+                </h2>
                 <div class="space-y-3">
                     <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                        <div class="font-medium text-sm dark:text-white">Human-Annotated Labels</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Collect real urgency annotations from domain experts</div>
+                        <div class="font-medium text-sm dark:text-white">Active Learning</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Incorporate feedback from emergency responders</div>
                     </div>
                     <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                        <div class="font-medium text-sm dark:text-white">XLM-RoBERTa</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Multilingual transformer for cross-language support</div>
+                        <div class="font-medium text-sm dark:text-white">Multi-Modal Analysis</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Add image/video classification for social media</div>
                     </div>
                     <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                        <div class="font-medium text-sm dark:text-white">Real-time Streaming</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Process live social media feeds during disasters</div>
+                        <div class="font-medium text-sm dark:text-white">Geo-Tagging</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Extract location info for rapid response mapping</div>
                     </div>
                     <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                        <div class="font-medium text-sm dark:text-white">Mobile Deployment</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Lightweight model for field workers in disaster zones</div>
+                        <div class="font-medium text-sm dark:text-white">Ensemble Models</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Combine ML + DL for better robustness</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6 mt-6">
-            <h2 class="font-semibold mb-4 flex items-center gap-2 dark:text-white"><i data-lucide="book-open" class="w-5 h-5"></i> References</h2>
+
+
+        <!-- References -->
+        <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
+            <h2 class="font-semibold mb-4 flex items-center gap-2 dark:text-white">
+                <i data-lucide="book-open" class="w-5 h-5"></i> References
+            </h2>
             <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
-                <li>• Han, J., Kamber, M., Pei, J. <em>Data Mining: Concepts and Techniques</em>. 4th Ed.</li>
-                <li>• Tan, P., Steinbach, M., Kumar, V. <em>Introduction to Data Mining</em>.</li>
-                <li>• Witten, I., Frank, E. <em>Data Mining: Practical ML Tools and Techniques</em>.</li>
-                <li>• Figure Eight / Appen — Disaster Response Messages Dataset</li>
+                <li>• Han, J., Kamber, M., Pei, J. <em>Data Mining: Concepts and Techniques</em>. 4th Ed. Morgan Kaufmann, 2022.</li>
+                <li>• Tan, P., Steinbach, M., Kumar, V. <em>Introduction to Data Mining</em>. 2nd Ed. Pearson, 2018.</li>
+                <li>• Sanh, V., et al. "DistilBERT, a distilled version of BERT." <em>arXiv:1910.01108</em>, 2019.</li>
+                <li>• Figure Eight (Appen). "Disaster Response Messages." <em>Multilingual Dataset</em>, 2018.</li>
+                <li>• HuggingFace Transformers. <em>State-of-the-art NLP</em>. https://huggingface.co/transformers</li>
             </ul>
         </div>
     </div>`;
@@ -902,6 +1119,13 @@ function renderReadableResult(result, modelType, endpoint) {
         <div class="mb-4 p-3 bg-white dark:bg-dark-700 rounded-xl border border-gray-100 dark:border-dark-600">
             <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Input Message</div>
             <div class="text-sm text-gray-700 dark:text-gray-300">"${result.message}"</div>
+            ${result.translated_message ? `
+            <div class="mt-2 pt-2 border-t border-gray-100 dark:border-dark-600 flex items-start gap-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 shrink-0 mt-0.5">
+                    <i data-lucide="languages" class="w-3 h-3"></i> Translated
+                </span>
+                <div class="text-sm text-gray-500 dark:text-gray-400 italic">"${result.translated_message}"</div>
+            </div>` : ''}
         </div>`;
     }
 

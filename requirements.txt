@@ -1,3 +1,5 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 torch
 transformers
 numpy
@@ -10,3 +12,5 @@ fastapi
 uvicorn
 python-dotenv
 huggingface_hub
+deep-translator
+wordcloud

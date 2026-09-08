@@ -1,96 +1,151 @@
 # Python
-models/DL/transformer_urgency/
-
-models/DL/transformer_essential/
-
-models/DL/transformer_binary/
-
 __pycache__/
-
 *.py[cod]
-
-*.pyo
-
-*.pyd
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # Virtual environments
-
-.venv/
-
 venv/
-
 env/
-
 ENV/
-
-# Environment variables / secrets
-
 .env
-
-.env.*
-
-!.env.example
+.venv
 
 # Jupyter Notebook
+.ipynb_checkpoints
 
-.ipynb_checkpoints/
-
-# IDE / editors
-
-.vscode/
-
+# IDE
 .idea/
+.vscode/
+*.swp
+*.swo
+*~
 
-# macOS
-
+# OS
 .DS_Store
+Thumbs.db
 
 # Logs
-
 *.log
+logs/
 
-# Testing / coverage
+# Model files (large binary files)
+models/ML/*.pkl
+models/DL/*/
+!models/DL/.gitkeep
 
-.pytest_cache/
+# Outputs
+outputs/
+!outputs/.gitkeep
 
-.coverage
+# Data (if large)
+data/*.csv
+!data/.gitkeep
 
+# Website - node modules not needed (using CDN)
+node_modules/
+
+# Environment variables
+.env.local
+.env.*.local
+
+# Coverage
 htmlcov/
+.coverage
+.coverage.*
+coverage.xml
 
-# Build / distribution
+# Pytest
+.pytest_cache/
+.test_cache/
 
-build/
-
-dist/
-
-*.egg-info/
-
-# ML / model cache
-
-.cache/
-
-huggingface_cache/
-
-transformers_cache/
-
-# Temporary files
-
-tmp/
-
-temp/
-
-# Local data
-
-*.sqlite
-
-*.sqlite3
-
-# Python tooling
-
+# MyPy
 .mypy_cache/
+.dmypy.json
+dmypy.json
 
+# Pyright
+.pyright_cache/
+
+# Ruff
 .ruff_cache/
 
-# OS files
+# IPython
+profile_default/
+ipython_config.py
 
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# mkdocs
+site/
+
+# Distribution / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IPython
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini

@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import pickle
 import warnings
 from pathlib import Path
@@ -14,6 +15,9 @@ from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from huggingface_hub import snapshot_download
 from dotenv import load_dotenv
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+from translation import translate_to_english
 
 load_dotenv()
 
@@ -497,7 +501,9 @@ def predict_urgency(
     )
 ):
 
-    text = clean_text(req.message)
+    message, was_translated = translate_to_english(req.message)
+
+    text = clean_text(message)
 
     pred = urg_model.predict([text])[0]
 
@@ -512,11 +518,16 @@ def predict_urgency(
         for i, p in enumerate(proba)
     }
 
-    return {
+    result = {
         "label": label,
         "confidence": round(confidence, 4),
         "probabilities": probs,
     }
+
+    if was_translated:
+        result["translated_message"] = message
+
+    return result
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -557,7 +568,9 @@ def predict_binary(
     )
 ):
 
-    text = clean_text(req.message)
+    message, was_translated = translate_to_english(req.message)
+
+    text = clean_text(message)
 
     proba = bin_model.predict_proba([text])[0]
 
@@ -567,11 +580,16 @@ def predict_binary(
         disaster_prob >= bin_threshold
     )
 
-    return {
+    result = {
         "is_disaster": bool(is_disaster),
         "confidence": round(disaster_prob, 4),
         "threshold": round(bin_threshold, 4),
     }
+
+    if was_translated:
+        result["translated_message"] = message
+
+    return result
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -627,7 +645,9 @@ def predict_essential(
     )
 ):
 
-    text = clean_text(req.message)
+    message, was_translated = translate_to_english(req.message)
+
+    text = clean_text(message)
 
     X = ess_tfidf.transform([text])
 
@@ -655,10 +675,15 @@ def predict_essential(
         if value["active"]
     ]
 
-    return {
+    response = {
         "active_categories": active,
         "details": results,
     }
+
+    if was_translated:
+        response["translated_message"] = message
+
+    return response
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -714,7 +739,9 @@ def predict_all(
     )
 ):
 
-    text = clean_text(req.message)
+    message, was_translated = translate_to_english(req.message)
+
+    text = clean_text(message)
 
     # Urgency
     u_pred = urg_model.predict([text])[0]
@@ -764,12 +791,17 @@ def predict_all(
         if prob >= thr:
             essential_active.append(cat)
 
-    return {
+    response = {
         "message": req.message,
         "urgency": urgency,
         "disaster": binary,
         "essential_categories": essential_active,
     }
+
+    if was_translated:
+        response["translated_message"] = message
+
+    return response
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -847,9 +879,11 @@ def dl_predict_urgency(
     )
 ):
 
+    message, was_translated = translate_to_english(req.message)
+
     text = (
         f"{req.genre} "
-        f"{clean_text(req.message)}"
+        f"{clean_text(message)}"
     )
 
     pred, proba = dl_predict_clf(
@@ -872,7 +906,7 @@ def dl_predict_urgency(
         for i, p in enumerate(proba[0])
     }
 
-    return {
+    result = {
         "label": label,
         "confidence": round(
             confidence,
@@ -880,6 +914,11 @@ def dl_predict_urgency(
         ),
         "probabilities": probs,
     }
+
+    if was_translated:
+        result["translated_message"] = message
+
+    return result
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -921,9 +960,11 @@ def dl_predict_binary(
     )
 ):
 
+    message, was_translated = translate_to_english(req.message)
+
     text = (
         f"{req.genre} "
-        f"{clean_text(req.message)}"
+        f"{clean_text(message)}"
     )
 
     pred, proba = dl_predict_clf(
@@ -940,7 +981,7 @@ def dl_predict_binary(
         pred[0] == 1
     )
 
-    return {
+    result = {
         "is_disaster": is_disaster,
         "confidence": round(
             disaster_prob,
@@ -954,6 +995,11 @@ def dl_predict_binary(
                 round(float(proba[0][1]), 4),
         },
     }
+
+    if was_translated:
+        result["translated_message"] = message
+
+    return result
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1006,9 +1052,11 @@ def dl_predict_essential(
     )
 ):
 
+    message, was_translated = translate_to_english(req.message)
+
     text = (
         f"{req.genre} "
-        f"{clean_text(req.message)}"
+        f"{clean_text(message)}"
     )
 
     preds, probs = dl_predict_ml(
@@ -1031,10 +1079,15 @@ def dl_predict_essential(
         )
     }
 
-    return {
+    response = {
         "active_categories": active,
         "probabilities": prob_dict,
     }
+
+    if was_translated:
+        response["translated_message"] = message
+
+    return response
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1088,9 +1141,11 @@ def dl_predict_all(
     )
 ):
 
+    message, was_translated = translate_to_english(req.message)
+
     text = (
         f"{req.genre} "
-        f"{clean_text(req.message)}"
+        f"{clean_text(message)}"
     )
 
     # Urgency
@@ -1152,12 +1207,17 @@ def dl_predict_all(
         if value == 1
     ]
 
-    return {
+    response = {
         "message": req.message,
         "urgency": urgency,
         "disaster": binary,
         "essential_categories": essential,
     }
+
+    if was_translated:
+        response["translated_message"] = message
+
+    return response
 
 
 # ═══════════════════════════════════════════════════════════════════

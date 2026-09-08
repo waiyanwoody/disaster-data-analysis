@@ -1,5 +1,6 @@
 // ── FastAPI Backend Integration ───────────────────────────────────
-const API_BASE = 'http://127.0.0.1:8000';
+// Use relative URLs so it works from any host/IP
+const API_BASE = '';
 
 async function post(endpoint, message, genre = 'direct') {
     try {
