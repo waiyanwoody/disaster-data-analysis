@@ -28,7 +28,7 @@ const Hero = {
 
                     <!-- Subtitle -->
                     <p class="max-w-3xl mx-auto text-lg sm:text-xl text-blue-100 dark:text-blue-200 mb-10 leading-relaxed">
-                        Machine learning pipeline for classifying disaster response messages using NLP and text mining techniques.
+                        End-to-end data mining and machine learning pipeline with descriptive mining, association rules, clustering, and deep learning classification for disaster response intelligence.
                     </p>
 
                     <!-- CTA Buttons -->

@@ -188,7 +188,7 @@ function renderHomeDataset() {
                             </div>
                             <div>
                                 <h2 class="font-bold text-white">disaster_messages.csv</h2>
-                                <p class="text-blue-100 text-xs">5 columns · 26,180 rows</p>
+                                <p class="text-blue-100 text-xs">4 columns · 26,180 rows</p>
                             </div>
                         </div>
                         <span class="px-2.5 py-1 bg-white/20 rounded-lg text-xs font-medium text-white">11.3 MB</span>
@@ -693,10 +693,7 @@ function renderEdaVisualizations() {
         <h1 class="text-3xl font-bold mb-2 dark:text-white">Visualizations</h1>
         <p class="text-gray-600 dark:text-gray-400 mb-8">Clustering analysis, word clouds, and dimensionality reduction</p>
         <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Word Cloud by Urgency Level</h2>
-                <img src="images/descriptive/new/wordcloud_urgency.png" alt="Word Cloud Urgency" class="w-full rounded-xl">
-            </div>
+            
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Word Cloud by Cluster</h2>
                 <img src="images/descriptive/new/wordcloud_clusters.png" alt="Word Cloud Clusters" class="w-full rounded-xl">
@@ -708,15 +705,14 @@ function renderEdaVisualizations() {
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">DBSCAN Noise Analysis</h2>
                 <img src="images/descriptive/new/dbscan_noise_analysis.png" alt="DBSCAN Noise Analysis" class="w-full rounded-xl">
+                <h2 class="font-semibold mb-4 dark:text-white mt-4">t-SNE: Cluster Visualization</h2>
+                <img src="images/descriptive/tsne_clusters.png" alt="t-SNE Clusters" class="w-full rounded-xl">
             </div>
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Label Cardinality Distribution</h2>
                 <img src="images/descriptive/new/label_cardinality.png" alt="Label Cardinality" class="w-full rounded-xl">
             </div>
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">t-SNE: Cluster Visualization</h2>
-                <img src="images/descriptive/tsne_clusters.png" alt="t-SNE Clusters" class="w-full rounded-xl">
-            </div>
+
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6 md:col-span-2">
                 <h2 class="font-semibold mb-4 dark:text-white">Cluster Profile: Category Distribution</h2>
                 <img src="images/descriptive/cluster_profile.png" alt="Cluster Profile" class="w-full rounded-xl">
@@ -730,9 +726,9 @@ function renderEdaVisualizations() {
 // ══════════════════════════════════════════════════════════════════
 function renderModelsTesting() {
     return Section.render({
-        title: 'Test Models',
-        subtitle: 'Run predictions on any model endpoint',
-        icon: 'brain',
+        // title: 'Test Models',
+        // subtitle: 'Run predictions on any model endpoint',
+        // icon: 'brain',
         children: `
             ${ModelCards.render()}
             ${TestForm.render()}
@@ -993,7 +989,7 @@ function renderInsightsConclusions() {
                         <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Urgency: 85.7% F1-Macro (4 classes)</li>
                         <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Essential: 68.9% F1-Macro (10 labels)</li>
                         <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> DistilBERT: 3-5% improvement over TF-IDF</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Myanmar language support (Azure API)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Myanmar language support (Google Translator)</li>
                     </ul>
                 </div>
             </div>
