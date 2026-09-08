@@ -75,21 +75,68 @@ const FindingCard = {
                 </div>
                 <h3 class="font-bold text-gray-900 dark:text-white">${title}</h3>
             </div>
-            <p class="text-3xl font-bold text-${color}-600 dark:text-${color}-400 mb-1">${value}</p>
-            <p class="text-gray-500 dark:text-gray-400 text-sm">${desc}</p>
+            <div class="text-2xl font-extrabold text-${color}-600 dark:text-${color}-400 mb-1">${value}</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">${desc}</div>
         </div>`;
     }
 };
 
-// ── Info Card Component ───────────────────────────────────────────
-const InfoCard = {
-    render(options = {}) {
-        const { icon, title, text, color = 'gray', type = 'default' } = options;
-        const bgClass = type === 'danger' ? 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30' : type === 'success' ? 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30' : `bg-${color}-50 dark:bg-${color}-900/20 border-${color}-100 dark:border-${color}-800/30`;
+// ── Models Modal Component ────────────────────────────────────────
+const ModelsModal = {
+    open() {
+        document.getElementById('models-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        if (window.lucide) lucide.createIcons();
+    },
+    close() {
+        document.getElementById('models-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    },
+    render() {
         return `
-        <div class="p-4 ${bgClass} rounded-xl border">
-            ${title ? `<div class="font-semibold text-sm flex items-center gap-2 text-gray-900 dark:text-white">${icon ? `<i data-lucide="${icon}" class="w-4 h-4"></i>` : ''} ${title}</div>` : ''}
-            ${text ? `<div class="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">${text}</div>` : ''}
+        <div id="models-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="ModelsModal.close()"></div>
+            <div class="relative w-full max-w-3xl bg-white dark:bg-dark-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-dark-700">
+                <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-t-2xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                            <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-white">3 Trained Models</h2>
+                            <p class="text-violet-200 text-xs">Urgency · Binary · Essential Categories</p>
+                        </div>
+                    </div>
+                    <button onclick="ModelsModal.close()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                        <i data-lucide="x" class="w-4 h-4 text-white"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="rounded-2xl border border-amber-200 dark:border-amber-900/40 p-5 flex flex-col gap-2">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div class="font-bold text-gray-900 dark:text-white text-sm mt-1">Model 1 — Urgency Classifier</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">4-class · critical / high / medium / low</div>
+                        </div>
+                        <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/40 p-5 flex flex-col gap-2">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+                                <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div class="font-bold text-gray-900 dark:text-white text-sm mt-1">Model 2 — Binary Disaster Classifier</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">binary · disaster-related vs not-related</div>
+                        </div>
+                        <div class="rounded-2xl border border-blue-200 dark:border-blue-900/40 p-5 flex flex-col gap-2">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+                                <i data-lucide="layers" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div class="font-bold text-gray-900 dark:text-white text-sm mt-1">Model 3 — Essential Categories</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">multi-label · food / water / shelter / medical / ...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>`;
     }
 };

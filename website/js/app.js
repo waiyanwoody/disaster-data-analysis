@@ -106,6 +106,12 @@ function renderPage() {
 function renderShell() {
     document.getElementById('header').innerHTML = Header.render();
     document.getElementById('footer').innerHTML = Footer.render();
+    // Inject modal into body once — stays in DOM across page navigations
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = ModelsModal.render();
+    document.body.appendChild(modalContainer);
+    // Close modal on Escape key
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') ModelsModal.close(); });
     lucide.createIcons();
 }
 

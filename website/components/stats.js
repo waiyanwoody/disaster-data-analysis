@@ -32,14 +32,14 @@ const Stats = {
                 </div>
 
                 <!-- Stat 3 -->
-                <div class="group bg-white dark:bg-dark-800 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl p-3 sm:p-5 transform hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-dark-700">
+                <div class="group bg-white dark:bg-dark-800 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl p-3 sm:p-5 transform hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-dark-700 cursor-pointer select-none" onclick="ModelsModal.open()">
                     <div class="flex items-center gap-2.5 sm:gap-3">
                         <div class="flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow">
                             <i data-lucide="cpu" class="w-4 h-4 sm:w-5 sm:h-5 text-white"></i>
                         </div>
                         <div class="min-w-0">
                             <p class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white leading-tight">3</p>
-                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">Models Trained</p>
+                            <p class="text-xs sm:text-sm text-violet-500 dark:text-violet-400 truncate font-medium">Models Trained ↗</p>
                         </div>
                     </div>
                 </div>
