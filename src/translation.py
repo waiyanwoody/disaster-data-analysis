@@ -2,19 +2,17 @@
 translation.py
 Detects Myanmar (Burmese) script in text and translates it to English.
 
-Primary:  Google Translate gtx endpoint (unofficial, ~0.2s, no key needed,
-          explicit requests timeout so it never hangs)
-Fallback: MyMemoryTranslator via deep-translator (5s thread timeout)
+Primary:  MyMemoryTranslator via deep-translator (5s thread timeout)
+Fallback: GoogleTranslator via deep-translator (5s thread timeout)
 
-Myanmar Unicode range: U+1000–U+109F
+Myanmar Unicode range: U+1000-U+109F
 """
 
 import re
 import logging
-import requests
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 
-from deep_translator import MyMemoryTranslator  # noqa: E402
+from deep_translator import GoogleTranslator, MyMemoryTranslator  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +25,8 @@ _MYANMAR_THRESHOLD = 0.15
 # Hard wall-clock timeout (seconds) per translator attempt
 _TRANSLATE_TIMEOUT = 5
 
-# Google Translate gtx endpoint — fast, no API key required
-_GOOGLE_GTX_URL = "https://translate.googleapis.com/translate_a/single"
-_GOOGLE_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/120.0.0.0 Safari/537.36"
-    )
-}
+# In-memory translation cache — avoids repeated network calls for the same text
+_cache: dict[str, str] = {}
 
 
 def _call_with_timeout(fn, timeout: float):
@@ -67,29 +58,45 @@ def is_myanmar(text: str) -> bool:
     return (myanmar_count / total_chars) >= _MYANMAR_THRESHOLD
 
 
-def _google_gtx_translate(text: str) -> str | None:
+def _google_translate(text: str) -> str | None:
     """
-    Translate Myanmar text to English via the Google gtx endpoint.
-    Uses an explicit requests timeout — never hangs.
+    Translate Myanmar text to English via GoogleTranslator (deep-translator).
+    Capped at _TRANSLATE_TIMEOUT seconds via a thread.
     Returns translated string or None on any failure.
     """
     try:
-        params = {"client": "gtx", "sl": "my", "tl": "en", "dt": "t", "q": text}
-        r = requests.get(
-            _GOOGLE_GTX_URL,
-            params=params,
-            headers=_GOOGLE_HEADERS,
+        translated = _call_with_timeout(
+            lambda: GoogleTranslator(source="my", target="en").translate(text),
             timeout=_TRANSLATE_TIMEOUT,
         )
-        if r.status_code == 200:
-            data = r.json()
-            translated = "".join(seg[0] for seg in data[0] if seg and seg[0])
-            return translated.strip() or None
-        logger.warning("Google GTX returned status %s", r.status_code)
-    except requests.exceptions.Timeout:
-        logger.warning("Google GTX timed out after %ss.", _TRANSLATE_TIMEOUT)
+        if translated and translated.strip():
+            return translated.strip()
+        logger.warning("GoogleTranslator returned empty result.")
+    except FuturesTimeoutError:
+        logger.warning("GoogleTranslator timed out after %ss.", _TRANSLATE_TIMEOUT)
     except Exception as exc:  # noqa: BLE001
-        logger.warning("Google GTX failed: %s", exc)
+        logger.warning("GoogleTranslator failed: %s", exc)
+    return None
+
+
+def _mymemory_translate(text: str) -> str | None:
+    """
+    Translate Myanmar text to English via MyMemoryTranslator (deep-translator).
+    Capped at _TRANSLATE_TIMEOUT seconds via a thread.
+    Returns translated string or None on any failure.
+    """
+    try:
+        translated = _call_with_timeout(
+            lambda: MyMemoryTranslator(source="my-MM", target="en-US").translate(text),
+            timeout=_TRANSLATE_TIMEOUT,
+        )
+        if translated and translated.strip() and not translated.startswith("'"):
+            return translated.strip()
+        logger.warning("MyMemory returned empty or invalid result.")
+    except FuturesTimeoutError:
+        logger.warning("MyMemoryTranslator timed out after %ss.", _TRANSLATE_TIMEOUT)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("MyMemory failed: %s", exc)
     return None
 
 
@@ -97,8 +104,9 @@ def translate_to_english(text: str) -> tuple[str, bool]:
     """
     Translate *text* to English if it is detected as Myanmar.
 
-    Primary:  Google GTX endpoint (~0.2s, explicit requests timeout)
-    Fallback: MyMemoryTranslator via deep-translator (5s thread timeout)
+    Cache hit  → returns immediately, no network call.
+    Primary:    MyMemoryTranslator via deep-translator (5s thread timeout)
+    Fallback:   GoogleTranslator via deep-translator (5s thread timeout)
 
     Returns:
         (translated_text, was_translated)
@@ -109,27 +117,27 @@ def translate_to_english(text: str) -> tuple[str, bool]:
     if not is_myanmar(text):
         return text, False
 
-    # ── Primary: Google GTX (fast, explicit timeout) ─────────────
-    translated = _google_gtx_translate(text)
+    # ── Cache check ───────────────────────────────────────────────
+    if text in _cache:
+        logger.debug("Translation cache hit.")
+        return _cache[text], True
+
+    # ── Primary: MyMemory ─────────────────────────────────────────
+    translated = _mymemory_translate(text)
     if translated:
-        logger.info("Myanmar→English (Google GTX): %r → %r", text[:80], translated[:80])
+        logger.info("Myanmar→English (MyMemory): %r → %r", text[:80], translated[:80])
+        _cache[text] = translated
         return translated, True
 
-    logger.warning("Google GTX failed. Trying MyMemory fallback.")
+    logger.warning("MyMemory failed. Trying Google fallback.")
 
-    # ── Fallback: MyMemory (thread-capped at 5s) ─────────────────
-    try:
-        translated = _call_with_timeout(
-            lambda: MyMemoryTranslator(source="my-MM", target="en-US").translate(text),
-            timeout=_TRANSLATE_TIMEOUT,
-        )
-        if translated and translated.strip() and not translated.startswith("'"):
-            logger.info("Myanmar→English (MyMemory): %r → %r", text[:80], translated[:80])
-            return translated, True
+    # ── Fallback: GoogleTranslator ────────────────────────────────
+    translated = _google_translate(text)
+    if translated:
+        logger.info("Myanmar→English (Google): %r → %r", text[:80], translated[:80])
+        _cache[text] = translated
+        return translated, True
 
-    except FuturesTimeoutError:
-        logger.warning("MyMemoryTranslator timed out after %ss. Using original text.", _TRANSLATE_TIMEOUT)
-    except Exception as exc:  # noqa: BLE001
-        logger.error("All translators failed (%s). Using original text.", exc)
-
+    logger.error("All translators failed. Using original text.")
     return text, False
+
