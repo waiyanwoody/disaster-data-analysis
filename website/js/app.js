@@ -626,18 +626,12 @@ function renderEdaDistributions() {
                 <h2 class="font-semibold mb-4 dark:text-white">Overview: Message Length, Genre & Urgency</h2>
                 <img src="images/descriptive/new/overview_length_genre_urgency.png" alt="Overview Length Genre Urgency" class="w-full rounded-xl">
             </div>
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Genre Distribution</h2>
-                <img src="images/descriptive/genre_distribution.png" alt="Genre Distribution" class="w-full rounded-xl">
-            </div>
+
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Class Imbalance</h2>
                 <img src="images/descriptive/new/class_imbalance.png" alt="Class Imbalance" class="w-full rounded-xl">
             </div>
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
-                <h2 class="font-semibold mb-4 dark:text-white">Message Length vs Urgency</h2>
-                <img src="images/descriptive/new/length_vs_urgency.png" alt="Length vs Urgency" class="w-full rounded-xl">
-            </div>
+
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Length vs Urgency by Category</h2>
                 <img src="images/descriptive/new/length_vs_urgency_category.png" alt="Length vs Urgency by Category" class="w-full rounded-xl">
@@ -660,10 +654,7 @@ function renderEdaPatterns() {
         <h1 class="text-3xl font-bold mb-2 dark:text-white">Patterns & Correlations</h1>
         <p class="text-gray-600 dark:text-gray-400 mb-8">Co-occurrence and association patterns between categories</p>
         <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6 md:col-span-2">
-                <h2 class="font-semibold mb-4 dark:text-white">Category Co-occurrence Heatmap</h2>
-                <img src="images/descriptive/cooccurrence_heatmap.png" alt="Co-occurrence Heatmap" class="w-full rounded-xl">
-            </div>
+           
             <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-lg p-6">
                 <h2 class="font-semibold mb-4 dark:text-white">Association Rules (Bar Chart)</h2>
                 <img src="images/descriptive/association_rules.png" alt="Association Rules" class="w-full rounded-xl">
