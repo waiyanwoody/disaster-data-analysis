@@ -94,8 +94,8 @@ kiro-datamining/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/kiro-datamining.git
-cd kiro-datamining
+git clone https://github.com/waiyanwoody/disaster-data-analysis.git
+cd disaster-data-analysis
 ```
 
 ### 2. Create Virtual Environment
